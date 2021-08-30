@@ -12,22 +12,21 @@ public class move : MonoBehaviour
     private int steerValue;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     private void OnTriggerEnter(Collider other) {
         if(other.CompareTag("box")){
             SceneManager.LoadScene("main");
-
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        speed += speedPerSecond * Time.deltaTime;
+        if (speed <= 50){
+            speed += speedPerSecond * Time.deltaTime;
+            turnSpeed += 0.005f;
+        }
         transform.Rotate(0f, steerValue*turnSpeed*Time.deltaTime,0f);
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
