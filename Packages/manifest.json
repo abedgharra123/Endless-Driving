@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.ads": "3.7.5",
     "com.unity.cinemachine": "2.6.5",
     "com.unity.collab-proxy": "1.7.1",
     "com.unity.device-simulator": "3.0.1-preview",

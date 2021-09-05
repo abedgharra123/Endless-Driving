@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,16 +17,27 @@ public class move : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.CompareTag("box")){
-            SceneManager.LoadScene("main");
+            if(PlayerPrefs.GetInt("Energy",0) == 0){
+                try
+                {
+                    AdManager.instance.ShowAd(); 
+                }
+                catch (System.Exception)
+                {
+                    SceneManager.LoadScene("main");
+                    throw;
+                }
+            }    
+            else SceneManager.LoadScene("main");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (speed <= 50){
+        if (speed <= 48){
             speed += speedPerSecond * Time.deltaTime;
-            turnSpeed += 0.005f;
+            turnSpeed += 0.002f;
         }
         transform.Rotate(0f, steerValue*turnSpeed*Time.deltaTime,0f);
         transform.Translate(Vector3.forward * speed * Time.deltaTime);

@@ -15,6 +15,7 @@ public class main : MonoBehaviour
     [SerializeField] private AndroidNotificationHandler ANH;
     [SerializeField] private TMP_Text timeToRechargeText;
     [SerializeField] private Button adButton;
+    [SerializeField] private TMP_Text currentScore;
     private int Energy;
     
     private string highScore = "HighScore";
@@ -27,6 +28,8 @@ public class main : MonoBehaviour
         if (!focusStatus) return;
         CancelInvoke();
         MenuHighScore.text = $"Highest Score: {PlayerPrefs.GetInt(highScore,0)}";
+        int lastScore = PlayerPrefs.GetInt("LastScore",0);
+        if (lastScore > 0) currentScore.text = $"Last Game Score : {lastScore}";
         Energy = PlayerPrefs.GetInt("Energy",MaxEnergy);
         if (Energy == 0){
             string TimeToRechargeString = PlayerPrefs.GetString("TimeToRecharge",string.Empty);
@@ -40,7 +43,6 @@ public class main : MonoBehaviour
                 Invoke(nameof(RechargeEnergy),(float)(RechargeTime - DateTime.Now).TotalSeconds);
                 
             }
-
         }
         PlayText.text = $"Play({Energy})";
     }
@@ -70,18 +72,23 @@ public class main : MonoBehaviour
     {
         if( Energy > 0 ){
             Energy -= 1;
-            if(Energy == 0){
-                PlayerPrefs.SetString("TimeToRecharge",DateTime.Now.AddMinutes(TimeToRecharge).ToString());
-                #if UNITY_ANDROID
-                ANH.ScheduleNotification(DateTime.Now.AddMinutes(TimeToRecharge));
-                #endif
-
-            }
             PlayerPrefs.SetInt("Energy",Energy);
             SceneManager.LoadScene(1);
+            if(Energy == 0){
+                PlayerPrefs.SetString("TimeToRecharge",DateTime.Now.AddMinutes(TimeToRecharge).ToString());
+#if UNITY_ANDROID
+                ANH.ScheduleNotification(DateTime.Now.AddMinutes(TimeToRecharge));
+#endif
+
+            }
         }
         
         
+    }
+
+    public void RechargeButton(){
+        PlayerPrefs.SetInt("Energy",PlayerPrefs.GetInt("Energy",0)+3);
+        AdManager.instance.ShowAd();
     }
     
 
