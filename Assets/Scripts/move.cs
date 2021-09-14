@@ -10,6 +10,10 @@ public class move : MonoBehaviour
     [SerializeField] private float speedPerSecond = 1f;
     [SerializeField] private float turnSpeed = 200f;
 
+    [SerializeField] private GameObject gameOverHandler;
+
+    [SerializeField] private GameObject scoreSystemObject;
+
     private int steerValue;
 
     // Start is called before the first frame update
@@ -17,25 +21,17 @@ public class move : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.CompareTag("box")){
-            if(PlayerPrefs.GetInt("Energy",0) == 0){
-                try
-                {
-                    AdManager.instance.ShowAd(); 
-                }
-                catch (System.Exception)
-                {
-                    SceneManager.LoadScene("main");
-                    throw;
-                }
-            }    
-            else SceneManager.LoadScene("main");
+            ScoreSystem s = scoreSystemObject.GetComponent<ScoreSystem>();
+            s.EndGame();
+            gameObject.SetActive(false);
+            gameOverHandler.SetActive(true);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (speed <= 48){
+        if (speed <= 49){
             speed += speedPerSecond * Time.deltaTime;
             turnSpeed += 0.002f;
         }

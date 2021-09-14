@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.SceneManagement;
+
 
 public class AdManager : MonoBehaviour, IUnityAdsListener
 {
@@ -14,6 +14,9 @@ public class AdManager : MonoBehaviour, IUnityAdsListener
     private string gameId = "4287200";
 #endif
     public static AdManager instance;
+
+    private GameOverHandler gameOverHandler;
+
 
     public void Awake(){
         if(instance != null && instance != this){
@@ -28,7 +31,8 @@ public class AdManager : MonoBehaviour, IUnityAdsListener
         }
     }
 
-    public void ShowAd(){
+    public void ShowAd(GameOverHandler g){
+        gameOverHandler = g;
         Advertisement.Show("rewardedVideo");
 
     }
@@ -43,9 +47,12 @@ public class AdManager : MonoBehaviour, IUnityAdsListener
         switch(showResult){
             case ShowResult.Failed:
                 Debug.LogWarning("Failed to finish the Ad");
+                SceneManager.LoadScene(0);
             break;
             case ShowResult.Finished:
-                SceneManager.LoadScene(0);
+                gameOverHandler.ContinueGame();
+                
+
             break;
             case ShowResult.Skipped:
             
